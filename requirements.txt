@@ -1,0 +1,11 @@
+diffusers
+transformers
+torch
+accelerate
+strava-python
+fastapi
+uvicorn
+mlflow
+streamlit
+pytest
+python-dotenv
