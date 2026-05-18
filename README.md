@@ -1,9 +1,26 @@
 # AuraRun
 
-Maps Strava run biometrics — heart rate, pace, elevation, time of day — to aesthetic descriptors, then renders each run as a generated image.
+Maps Strava run biometrics: heart rate, pace, elevation, time of day -> to aesthetic descriptors, then renders each run as a generated image.
+<img width="1433" height="801" alt="image" src="https://github.com/user-attachments/assets/533f7738-0b24-4d14-b822-d780d8a69a83" />
 
-![DEMO GIF](./docs/demo.gif)
-<!-- placeholder: record a 30-60s Loom of fetch → generate → gallery, export as gif, drop here -->
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/f0c09ca9-d2fd-4f7a-b52f-6477531b6260" width="420"/><br/>
+      Test Input Run Data
+    </td>
+    <td align="center" valign="middle">
+      <h1>→</h1>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/9bca2a7b-7202-43bb-a6d6-37f2af6fa15a" width="420"/><br/>
+      Generated Artwork
+    </td>
+  </tr>
+</table>
+
+ 
+
 
 ## How it works
 
