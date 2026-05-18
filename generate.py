@@ -1,6 +1,9 @@
+import argparse
 import json
+import time
 from pathlib import Path
 
+import mlflow
 import torch
 from diffusers import StableDiffusionPipeline
 
@@ -11,6 +14,7 @@ OUTPUTS_DIR = Path(__file__).parent / "outputs"
 DATA_PATH = Path(__file__).parent / "data" / "sample_runs.json"
 FIXTURE_PATH = Path(__file__).parent / "tests" / "fixtures" / "sample_runs.json"
 
+EXPERIMENT_NAME = "aurarun-prompt-eval"
 NUM_INFERENCE_STEPS = 30
 GUIDANCE_SCALE = 7.5
 
@@ -63,28 +67,78 @@ def generate_artwork(prompt: str, activity_id: str) -> str:
     return str(output_path)
 
 
-def _load_first_activity() -> dict:
-    if DATA_PATH.exists():
-        activities = json.loads(DATA_PATH.read_text())
-        if activities:
+def _load_activity(activity_id: str | None) -> dict:
+    for source in (DATA_PATH, FIXTURE_PATH):
+        if not source.exists():
+            continue
+        activities = json.loads(source.read_text())
+        if not activities:
+            continue
+        if activity_id is None:
             return activities[0]
-    print(f"No activities in {DATA_PATH}; using fixture {FIXTURE_PATH}")
-    activities = json.loads(FIXTURE_PATH.read_text())
-    return activities[0]
+        for activity in activities:
+            if str(activity.get("id")) == str(activity_id):
+                return activity
+    if activity_id is None:
+        raise RuntimeError("No activities found in data/ or tests/fixtures/.")
+    raise RuntimeError(
+        f"Activity id {activity_id!r} not found in {DATA_PATH} or {FIXTURE_PATH}."
+    )
 
 
 def main() -> None:
-    activity = _load_first_activity()
+    parser = argparse.ArgumentParser(description="Generate an AuraRun image and log to MLflow.")
+    parser.add_argument(
+        "--activity_id",
+        type=str,
+        default=None,
+        help="Strava activity id to render. Defaults to the first available activity.",
+    )
+    parser.add_argument(
+        "--score",
+        type=int,
+        choices=range(1, 6),
+        default=None,
+        metavar="{1-5}",
+        help="Manual quality score for this generation (1-5). Logged as an MLflow metric.",
+    )
+    args = parser.parse_args()
+
+    activity = _load_activity(args.activity_id)
     activity_id = str(activity.get("id", "unknown"))
     descriptors = build_descriptors(activity)
     prompt = build_prompt(descriptors)
 
-    print(f"Device:   {detect_device()}")
-    print(f"Activity: {activity.get('name')!r} (id={activity_id})")
-    print(f"Prompt:   {prompt}")
+    mlflow.set_experiment(EXPERIMENT_NAME)
 
-    output_path = generate_artwork(prompt, activity_id)
-    print(f"Saved:    {output_path}")
+    with mlflow.start_run() as run:
+        mlflow.log_param("prompt_template", prompt)
+        mlflow.log_param("activity_id", activity_id)
+        mlflow.log_param("num_inference_steps", NUM_INFERENCE_STEPS)
+        mlflow.log_param("guidance_scale", GUIDANCE_SCALE)
+        mlflow.log_param("mood_descriptor", descriptors.get("mood"))
+        mlflow.log_param("lighting_descriptor", descriptors.get("lighting"))
+        mlflow.log_param("style_descriptor", descriptors.get("style"))
+
+        print(f"Device:   {detect_device()}")
+        print(f"Activity: {activity.get('name')!r} (id={activity_id})")
+        print(f"Prompt:   {prompt}")
+        print(f"Run ID:   {run.info.run_id}")
+
+        start = time.perf_counter()
+        output_path = generate_artwork(prompt, activity_id)
+        elapsed = time.perf_counter() - start
+
+        mlflow.log_metric("generation_time_seconds", elapsed)
+        if args.score is not None:
+            mlflow.log_metric("manual_score", args.score)
+
+        mlflow.log_artifact(output_path)
+
+        print(f"Saved:    {output_path}")
+        print(f"Elapsed:  {elapsed:.2f}s")
+        if args.score is not None:
+            print(f"Score:    {args.score}/5")
 
 
 if __name__ == "__main__":
