@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "name": "Tempo morning intervals",
+    "start_date": "2024-06-15T08:30:00Z",
+    "elapsed_time": 1800,
+    "distance": 7000.0,
+    "average_heartrate": 175.0,
+    "max_heartrate": 188.0,
+    "total_elevation_gain": 80.0,
+    "average_speed": 3.8
+  },
+  {
+    "id": 2,
+    "name": "Mountain trail explore",
+    "start_date": "2024-06-16T15:00:00Z",
+    "elapsed_time": 5400,
+    "distance": 12000.0,
+    "average_heartrate": 135.0,
+    "max_heartrate": 165.0,
+    "total_elevation_gain": 350.0,
+    "average_speed": 2.2
+  },
+  {
+    "id": 3,
+    "name": "Easy evening shake-out",
+    "start_date": "2024-06-17T19:45:00Z",
+    "elapsed_time": 1500,
+    "distance": 4000.0,
+    "average_heartrate": 150.0,
+    "max_heartrate": 168.0,
+    "total_elevation_gain": 30.0,
+    "average_speed": 2.7
+  },
+  {
+    "id": 4,
+    "name": "Pre-dawn loop (no HR strap)",
+    "start_date": "2024-06-18T05:30:00Z",
+    "elapsed_time": 2400,
+    "distance": 8000.0,
+    "average_heartrate": null,
+    "max_heartrate": null,
+    "total_elevation_gain": 100.0,
+    "average_speed": 3.3
+  },
+  {
+    "id": 5,
+    "name": "Sparse data run",
+    "start_date": null,
+    "elapsed_time": 1200,
+    "distance": null,
+    "average_heartrate": null,
+    "max_heartrate": null,
+    "total_elevation_gain": null,
+    "average_speed": null
+  }
+]

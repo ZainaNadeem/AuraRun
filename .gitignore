@@ -1,1 +1,34 @@
 .claude
+
+# Secrets
+.env
+
+# Personal learning notes (not for the repo)
+CODE_NOTES.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual envs
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# ML / experiment artifacts
+mlruns/
+*.ckpt
+*.safetensors
+
+# Generated images (keep the folder via .gitkeep, ignore contents)
+outputs/*
+!outputs/.gitkeep
